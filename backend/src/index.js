@@ -5,6 +5,16 @@ import mysql from 'mysql2/promise';
 import KoaBody from 'koa-bodyparser';
 import Url from 'url';
 
+import { connectionSettings } from './settings';
+import { databaseReady } from './helpers';
+import { initDB } from './fixtures';
+
+// Initialize DB
+(async () => {
+  await databaseReady();
+  await initDB();
+})();
+
 // The port that this server will run on, defaults to 9000
 const port = process.env.PORT || 9000;
 
@@ -18,7 +28,7 @@ const todos = new Router();
 
 // Define API path
 const apiPath = '/api/v1';
-
+/*
 const connectionSettings = {
   host: 'db',
   user: 'root',
@@ -26,7 +36,7 @@ const connectionSettings = {
   password: 'db_rootpass',
   namedPlaceholders: true,
 };
-
+*/
 test.get(`${apiPath}/test`, async (ctx) => {
   try {
     const conn = await mysql.createConnection(connectionSettings);
