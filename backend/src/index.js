@@ -25,6 +25,7 @@ const koaBody = new KoaBody();
 // Instantiate routers
 const test = new Router();
 const todos = new Router();
+const art = new Router();
 
 // Define API path
 const apiPath = '/api/v1';
@@ -86,7 +87,19 @@ const checkContent = async (ctx, next) => {
 const todosPath = `${apiPath}/todos`;
 const todoPath = `${todosPath}/:id`;
 
-// GET /resource
+// taideteokset
+const artpiecesPath = `${apiPath}/artpieces`;
+const artpiecePath = `${artpiecesPath}/:id`;
+
+// taiteilijat
+const artistsPath = `${apiPath}/artists`;
+const artistPath = `${artistsPath}/:id`;
+
+// museot
+const museumsPath = `${apiPath}/museums`;
+const museumPath = `${museumsPath}/:id`;
+
+// GET /resource (TODOS)
 todos.get(todosPath, checkAccept, async (ctx) => {
   const url = Url.parse(ctx.url, true);
   const { sort } = url.query;
@@ -141,7 +154,172 @@ todos.get(todosPath, checkAccept, async (ctx) => {
   }
 });
 
-// GET /resource/:id
+// GET /resource (taideteokset)
+todos.get(artpiecesPath, checkAccept, async (ctx) => {
+  const url = Url.parse(ctx.url, true);
+  const { sort } = url.query;
+
+  const parseSortQuery = ({ urlSortQuery, whitelist }) => {
+    let query = '';
+    if (urlSortQuery) {
+      const sortParams = urlSortQuery.split(',');
+
+      query = 'ORDER BY ';
+      sortParams.forEach((param, index) => {
+        let trimmedParam = param;
+        let desc = false;
+
+        if (param[0] === '-') {
+          // Remove the first character
+          trimmedParam = param.slice(1);
+          // Set descending to true
+          desc = true;
+        }
+
+        // If parameter is not whitelisted, ignore it
+        // This also prevents SQL injection even without statement preparation
+        if (!whitelist.includes(trimmedParam)) return;
+
+        // If this is not the first sort parameter, append ', '
+        if (index > 0) query = query.concat(', ');
+
+        // Append the name of the field
+        query = query.concat(trimmedParam);
+
+        if (desc) query = query.concat(' DESC');
+      });
+    }
+    return query;
+  };
+  const orderBy = parseSortQuery({ urlSortQuery: sort, whitelist: ['id', 'text', 'done'] });
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+        SELECT *
+        FROM taideteokset
+        ${orderBy}
+      `);
+
+    // Return all todos
+    ctx.body = data;
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// GET /resource (taiteilijat)
+todos.get(artistsPath, checkAccept, async (ctx) => {
+  const url = Url.parse(ctx.url, true);
+  const { sort } = url.query;
+
+  const parseSortQuery = ({ urlSortQuery, whitelist }) => {
+    let query = '';
+    if (urlSortQuery) {
+      const sortParams = urlSortQuery.split(',');
+
+      query = 'ORDER BY ';
+      sortParams.forEach((param, index) => {
+        let trimmedParam = param;
+        let desc = false;
+
+        if (param[0] === '-') {
+          // Remove the first character
+          trimmedParam = param.slice(1);
+          // Set descending to true
+          desc = true;
+        }
+
+        // If parameter is not whitelisted, ignore it
+        // This also prevents SQL injection even without statement preparation
+        if (!whitelist.includes(trimmedParam)) return;
+
+        // If this is not the first sort parameter, append ', '
+        if (index > 0) query = query.concat(', ');
+
+        // Append the name of the field
+        query = query.concat(trimmedParam);
+
+        if (desc) query = query.concat(' DESC');
+      });
+    }
+    return query;
+  };
+  const orderBy = parseSortQuery({ urlSortQuery: sort, whitelist: ['id', 'text', 'done'] });
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+        SELECT *
+        FROM taiteilijat
+        ${orderBy}
+      `);
+
+    // Return all todos
+    ctx.body = data;
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// GET /resource (museot)
+todos.get(museumsPath, checkAccept, async (ctx) => {
+  const url = Url.parse(ctx.url, true);
+  const { sort } = url.query;
+
+  const parseSortQuery = ({ urlSortQuery, whitelist }) => {
+    let query = '';
+    if (urlSortQuery) {
+      const sortParams = urlSortQuery.split(',');
+
+      query = 'ORDER BY ';
+      sortParams.forEach((param, index) => {
+        let trimmedParam = param;
+        let desc = false;
+
+        if (param[0] === '-') {
+          // Remove the first character
+          trimmedParam = param.slice(1);
+          // Set descending to true
+          desc = true;
+        }
+
+        // If parameter is not whitelisted, ignore it
+        // This also prevents SQL injection even without statement preparation
+        if (!whitelist.includes(trimmedParam)) return;
+
+        // If this is not the first sort parameter, append ', '
+        if (index > 0) query = query.concat(', ');
+
+        // Append the name of the field
+        query = query.concat(trimmedParam);
+
+        if (desc) query = query.concat(' DESC');
+      });
+    }
+    return query;
+  };
+  const orderBy = parseSortQuery({ urlSortQuery: sort, whitelist: ['id', 'text', 'done'] });
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+        SELECT *
+        FROM museot
+        ${orderBy}
+      `);
+
+    // Return all todos
+    ctx.body = data;
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// GET /resource/:id (TODOS)
 todos.get(todoPath, checkAccept, async (ctx) => {
   const { id } = ctx.params;
   console.log('.get id contains:', id);
@@ -166,7 +344,82 @@ todos.get(todoPath, checkAccept, async (ctx) => {
   }
 });
 
-// POST /resource
+// GET /resource/:id (taideteos)
+todos.get(artpiecePath, checkAccept, async (ctx) => {
+  const { id } = ctx.params;
+  console.log('.get id contains:', id);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM taideteokset
+          WHERE taideteos_id = :id;
+        `, { id });
+
+    // Return the resource
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// GET /resource/:id (taiteilijat)
+todos.get(artistPath, checkAccept, async (ctx) => {
+  const { id } = ctx.params;
+  console.log('.get id contains:', id);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM taiteilijat
+          WHERE taiteilija_id = :id;
+        `, { id });
+
+    // Return the resource
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// GET /resource/:id (museot)
+todos.get(museumPath, checkAccept, async (ctx) => {
+  const { id } = ctx.params;
+  console.log('.get id contains:', id);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM museot
+          WHERE museo_id = :id;
+        `, { id });
+
+    // Return the resource
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// POST /resource (TODOS)
 todos.post(todosPath, checkAccept, checkContent, koaBody, async (ctx) => {
   const { text } = ctx.request.body;
   console.log('.post text contains:', text);
@@ -209,7 +462,7 @@ todos.post(todosPath, checkAccept, checkContent, koaBody, async (ctx) => {
   }
 });
 
-// PUT /resource/:id
+// PUT /resource/:id (TODOS)
 todos.put(todoPath, checkAccept, checkContent, koaBody, async (ctx) => {
   const { id } = ctx.params;
   const { text, done } = ctx.request.body;
@@ -232,7 +485,7 @@ todos.put(todoPath, checkAccept, checkContent, koaBody, async (ctx) => {
   try {
     const conn = await mysql.createConnection(connectionSettings);
 
-    // Update the todo
+    // Update the todo (TODO)
     const [status] = await conn.execute(`
            UPDATE todos
            SET text = :text, done = :done
@@ -262,7 +515,7 @@ todos.put(todoPath, checkAccept, checkContent, koaBody, async (ctx) => {
   }
 });
 
-// DELETE /resource/:id
+// DELETE /resource/:id (TODOS)
 todos.del(todoPath, async (ctx) => {
   const { id } = ctx.params;
   console.log('.del id contains:', id);
