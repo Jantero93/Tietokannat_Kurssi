@@ -34,3 +34,21 @@ curl -i -X POST \
 -d '{ "tekovuosi": "-9999", "aihe": "testiAihe", "myyntihinta": "123456789", "taiteilijaFK": "2", "museoFK": "2", "teoksenNimi": "TestiTeosPenanen" }' \
 "http://localhost:9000/api/v1/artpieces"
 
+TOIMII PUT MUSEO
+curl -i -X PUT \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "museoNimi": "TEST", "maa": "TEST", "kaupunki": "TEST" }' \
+"http://localhost:9000/api/v1/museums/37"
+
+TOIMII PUT TAITEILIJA
+curl -i -X PUT \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "tekija": "ABC", "kansalaisuus": "ABC" }' \
+"http://localhost:9000/api/v1/artists/4"
+
+TOIMII PUT TAIDETEOS
+curl -i -X PUT \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "tekovuosi": "-1", "aihe": "Aiheeton", "myyntihinta": "-999", "taiteilijaFK":  "1", "museoFK": "1", "teoksenNimi": "muutettuTeos" }' \
+"http://localhost:9000/api/v1/artpieces/5"
+
