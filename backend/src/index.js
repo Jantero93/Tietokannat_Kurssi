@@ -101,6 +101,7 @@ const museumPath = `${museumsPath}/:id`;
 
 // kaikki
 const allPath = `${apiPath}/all`;
+const allExact = `${allPath}/:id`;
 
 // GET /resource (KAIKKI)
 todos.get(allPath, checkAccept, async (ctx) => {
@@ -394,6 +395,33 @@ todos.get(todoPath, checkAccept, async (ctx) => {
           SELECT *
           FROM todos
           WHERE id = :id;
+        `, { id });
+
+    // Return the resource
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// GET /resource/:id (all data from exact artpiece)
+todos.get(allExact, checkAccept, async (ctx) => {
+  const { id } = ctx.params;
+  console.log('.get id contains:', id);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM taideteokset
+          INNER JOIN taiteilijat ON taideteokset.taiteilijaFK = taiteilijat.taiteilija_id
+          INNER JOIN museot ON taideteokset.museoFK = museot.museo_id
+          WHERE taideteos_id = :id
         `, { id });
 
     // Return the resource
