@@ -1,0 +1,36 @@
+curl -i -X POST \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "tekovuosi": "9999", "tyyppi": "testityyppi", "aihe": "testiaihe", "korkeus:" "123", "leveys": "321", 
+"myyntihinta": "321321321", "arviohinta": "32111111", "taiteilijaFK": "1", "museoFK": "1", "teoksenNimi": "testiteos"  }' \
+"http://localhost:9000/api/v1/artpieces"
+
+
+
+curl -i -X PUT \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "text": "100 squats", "done": true }' \
+"http://localhost:9000/api/v1/todos/2"
+
+
+museoNimi, kaupunki, maa
+
+
+TOIMII MUSEO POST
+curl -i -X POST \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "museoNimi": "lisattyMuseo", "maa": "Japan", "kaupunki": "TOKIO" }' \
+"http://localhost:9000/api/v1/museums"
+
+
+TOIMII TAITEILIJA POST
+curl -i -X POST \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "tekija": "testiTekija", "kansalaisuus": "testiKansalaisuus" }' \
+"http://localhost:9000/api/v1/artists"
+
+TOIMII POST TAIDETEOS
+curl -i -X POST \
+-H "Content-Type: application/json;charset=UTF-8" \
+-d '{ "tekovuosi": "-9999", "aihe": "testiAihe", "myyntihinta": "123456789", "taiteilijaFK": "2", "museoFK": "2", "teoksenNimi": "TestiTeosPenanen" }' \
+"http://localhost:9000/api/v1/artpieces"
+

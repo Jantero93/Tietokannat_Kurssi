@@ -462,6 +462,143 @@ todos.post(todosPath, checkAccept, checkContent, koaBody, async (ctx) => {
   }
 });
 
+// POST /resource (museot)
+todos.post(museumsPath, checkAccept, checkContent, koaBody, async (ctx) => {
+  const { museoNimi, maa, kaupunki } = ctx.request.body;
+  console.log('.post text contains:', museoNimi);
+
+  if (typeof museoNimi === 'undefined') {
+    ctx.throw(400, 'body.text is required');
+  } else if (typeof museoNimi !== 'string') {
+    ctx.throw(400, 'body.done must be string');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+
+    // Insert a museum
+    const [status] = await conn.execute(`
+          INSERT INTO museot (museoNimi, maa, kaupunki)
+          VALUES (:museoNimi, :maa, :kaupunki);
+        `, { museoNimi, maa, kaupunki });
+    const { insertId } = status;
+
+    // Get the new museum
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM museot
+          WHERE museo_id = :museo_id;
+        `, { museo_id: insertId });
+
+    // Set the response header to 201 Created
+    ctx.status = 201;
+
+    // Set the Location header to point to the new resource
+    const newUrl = `${ctx.host}${Router.url(todoPath, { id: insertId })}`;
+    ctx.set('Location', newUrl);
+
+    // Return the new museum
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// POST /resource (taiteilija)
+todos.post(artistsPath, checkAccept, checkContent, koaBody, async (ctx) => {
+  const { tekija, kansalaisuus } = ctx.request.body;
+  console.log('.post text contains:', tekija, kansalaisuus);
+
+  if (typeof tekija === 'undefined') {
+    ctx.throw(400, 'body.text is required');
+  } else if (typeof tekija !== 'string') {
+    ctx.throw(400, 'body.done must be string');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+
+    // Insert a artist
+    const [status] = await conn.execute(`
+          INSERT INTO taiteilijat (tekija, kansalaisuus)
+          VALUES (:tekija, :kansalaisuus);
+        `, { tekija, kansalaisuus });
+    const { insertId } = status;
+
+    // Get the new artist
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM taiteilijat
+          WHERE taiteilija_id = :taiteilija_id;
+        `, { taiteilija_id: insertId });
+
+    // Set the response header to 201 Created
+    ctx.status = 201;
+
+    // Set the Location header to point to the new resource
+    const newUrl = `${ctx.host}${Router.url(todoPath, { id: insertId })}`;
+    ctx.set('Location', newUrl);
+
+    // Return the new artist
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// POST /resource (artpiece)
+todos.post(artpiecesPath, checkAccept, checkContent, koaBody, async (ctx) => {
+  const {
+    tekovuosi,
+    aihe,
+    myyntihinta,
+    taiteilijaFK,
+    museoFK, teoksenNimi,
+  } = ctx.request.body;
+  console.log('.post text contains:', tekovuosi, aihe, myyntihinta, taiteilijaFK, museoFK, teoksenNimi);
+
+  if (typeof teoksenNimi === 'undefined') {
+    ctx.throw(400, 'body.text is required');
+  } else if (typeof teoksenNimi !== 'string') {
+    ctx.throw(400, 'body.done must be string');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+
+    // Insert a artpiece
+    const [status] = await conn.execute(`
+          INSERT INTO taideteokset (tekovuosi, aihe, myyntihinta, taiteilijaFK, museoFK, teoksenNimi)
+          VALUES (:tekovuosi, :aihe, :myyntihinta, :taiteilijaFK, :museoFK, :teoksenNimi);
+        `, {
+      tekovuosi, aihe, myyntihinta, taiteilijaFK, museoFK, teoksenNimi,
+    });
+    const { insertId } = status;
+
+    // Get the new artpiece
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM taideteokset
+          WHERE taideteos_id = :taideteos_id;
+        `, { taideteos_id: insertId });
+
+    // Set the response header to 201 Created
+    ctx.status = 201;
+
+    // Set the Location header to point to the new resource
+    const newUrl = `${ctx.host}${Router.url(todoPath, { id: insertId })}`;
+    ctx.set('Location', newUrl);
+
+    // Return the new artist
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
 // PUT /resource/:id (TODOS)
 todos.put(todoPath, checkAccept, checkContent, koaBody, async (ctx) => {
   const { id } = ctx.params;
