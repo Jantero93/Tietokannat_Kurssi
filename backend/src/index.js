@@ -652,6 +652,175 @@ todos.put(todoPath, checkAccept, checkContent, koaBody, async (ctx) => {
   }
 });
 
+// PUT /resource/:id (museum)
+todos.put(museumPath, checkAccept, checkContent, koaBody, async (ctx) => {
+  const { id } = ctx.params;
+  const { museoNimi, maa, kaupunki } = ctx.request.body;
+  console.log('.put id contains:', id);
+  console.log('.put text contains:', museoNimi);
+  console.log('.put done contains:', maa);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  } else if (typeof museoNimi === 'undefined') {
+    ctx.throw(400, 'body.text is required');
+  } else if (typeof museoNimi !== 'string') {
+    ctx.throw(400, 'body.text must be string');
+  } else if (typeof maa === 'undefined') {
+    ctx.throw(400, 'body.done is required');
+  } else if (typeof maa !== 'string') {
+    ctx.throw(400, 'body.done must be string');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+
+    // Update the museum
+    const [status] = await conn.execute(`
+           UPDATE museot
+           SET museoNimi = :museoNimi, maa = :maa, kaupunki = :kaupunki
+           WHERE museo_id = :id;
+         `, {
+      id, museoNimi, maa, kaupunki,
+    });
+
+    if (status.affectedRows === 0) {
+      // If the resource does not already exist, create it
+      await conn.execute(`
+          INSERT INTO museot (museo_id, museoNimi, maa, kaupunki)
+          VALUES (:id, :museoNimi, :maa, :kaupunki);
+        `, {
+        id, museoNimi, maa, kaupunki,
+      });
+    }
+
+    // Get the museum
+    const [data] = await conn.execute(`
+           SELECT *
+           FROM museot
+           WHERE museo_id = :id;
+         `, { id });
+
+    // Return the resource
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// PUT /resource/:id (artist)
+todos.put(artistPath, checkAccept, checkContent, koaBody, async (ctx) => {
+  const { id } = ctx.params;
+  const { tekija, kansalaisuus } = ctx.request.body;
+  console.log('.put id contains:', id);
+  console.log('.put text contains:', tekija);
+  console.log('.put done contains:', kansalaisuus);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  } else if (typeof tekija === 'undefined') {
+    ctx.throw(400, 'body.text is required');
+  } else if (typeof tekija !== 'string') {
+    ctx.throw(400, 'body.text must be string');
+  } else if (typeof kansalaisuus === 'undefined') {
+    ctx.throw(400, 'body.done is required');
+  } else if (typeof kansalaisuus !== 'string') {
+    ctx.throw(400, 'body.done must be string');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+
+    // Update the artist
+    const [status] = await conn.execute(`
+           UPDATE taiteilijat
+           SET tekija = :tekija, kansalaisuus = :kansalaisuus
+           WHERE taiteilija_id = :id;
+         `, {
+      id, tekija, kansalaisuus,
+    });
+
+    if (status.affectedRows === 0) {
+      // If the resource does not already exist, create it
+      await conn.execute(`
+          INSERT INTO taiteilijat (taiteilija_id, tekija, kansalaisuus)
+          VALUES (:id, :tekija, :kansalaisuus);
+        `, {
+        id, tekija, kansalaisuus,
+      });
+    }
+
+    // Get the artist
+    const [data] = await conn.execute(`
+           SELECT *
+           FROM taiteilijat
+           WHERE taiteilija_id = :id;
+         `, { id });
+
+    // Return the resource
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// PUT /resource/:id (artpiece)
+todos.put(artpiecePath, checkAccept, checkContent, koaBody, async (ctx) => {
+  const { id } = ctx.params;
+  const {
+    tekovuosi, aihe, myyntihinta, taiteilijaFK, museoFK, teoksenNimi,
+  } = ctx.request.body;
+  console.log('.put id contains:', id);
+  console.log('.put text contains:', teoksenNimi);
+  console.log('.put done contains:', aihe);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  } else if (typeof teoksenNimi === 'undefined') {
+    ctx.throw(400, 'body.text is required');
+  } else if (typeof teoksenNimi !== 'string') {
+    ctx.throw(400, 'body.text must be string');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+
+    // Update the artpiece
+    const [status] = await conn.execute(`
+           UPDATE taideteokset
+           SET tekovuosi = :tekovuosi, aihe = :aihe, myyntihinta = :myyntihinta, taiteilijaFK = :taiteilijaFK, museoFK = :museoFK, teoksenNimi = :teoksenNimi
+           WHERE taideteos_id = :id;
+         `, {
+      id, tekovuosi, aihe, myyntihinta, taiteilijaFK, museoFK, teoksenNimi,
+    });
+
+    if (status.affectedRows === 0) {
+      // If the resource does not already exist, create it
+      await conn.execute(`
+          INSERT INTO taideteokset (taideteos_id, tekovuosi, aihe, myyntihinta, taiteilijaFK, museoFK, teoksenNimi)
+          VALUES (:id, :tekovuosi, :aihe, :myyntihinta, :taiteilijaFK, :museoFK, :teoksenNimi);
+        `, {
+        id, tekovuosi, aihe, myyntihinta, taiteilijaFK, museoFK, teoksenNimi,
+      });
+    }
+
+    // Get the artpiece
+    const [data] = await conn.execute(`
+           SELECT *
+           FROM taideteokset
+           WHERE taideteos_id = :id;
+         `, { id });
+
+    // Return the resource
+    ctx.body = data[0];
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
 // DELETE /resource/:id (TODOS)
 todos.del(todoPath, async (ctx) => {
   const { id } = ctx.params;
