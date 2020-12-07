@@ -19,27 +19,27 @@
 #   - Museon muokkaus : PUT/museum/:id
 #   - Taiteilijat muokkaus : PUT/artist/:id
 #   - Taideteokset muokkaus : PUT/artpiece/:id
+
   
 #   - Taideteoksen poisto: DELETE /artpiece/:id
+#   - Museon poisto: DELETE /museum/:id
+#   - Taiteilijan poisto:  DELETE /artist/:id
 
-#   - Taiteilijan kaikkien teosten haku: GET /artist/artpieces
+#   - Koko datan haku GET /all/ (todellisessa elämässä vähän tyhmä)
+#   - Tietyn taideteoksen kaikki data GET /all/:id
+
+#   - Tietyn taiteilijan kaikkien teosten haku: GET /artist/:name
 #   - Taiteilijan haku GET /artist/:id
-
-#   - Taideteoksen muokkaus: POST /artpiece
-
-#   - ...
-
-#
 
 # Tekniset vaatimukset:
 
-# (-  Docker)
+# -  Docker
 
 # - Node js v. 13.x tai uudempi
 
 # - npm
 
-# - MariaDb tai MySQL kanta käytössä
+# - MySQL kanta käytössä
 
 #
 
