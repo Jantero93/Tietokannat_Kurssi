@@ -12,14 +12,17 @@
 
 # API-kuvaus:
 
-#   - Taiteilijan lisäys: PUT/artist
+#   - Museon lisäys : POST/museum
+#   - Taiteilijan lisäys: POST/artist
+#   - Taideteoksen lisäys: POST/artpiece
 
-#   - Taideteoksen lisäys: PUT /artpiece
-
+#   - Museon muokkaus : PUT/museum/:id
+#   - Taiteilijat muokkaus : PUT/artist/:id
+#   - Taideteokset muokkaus : PUT/artpiece/:id
+  
 #   - Taideteoksen poisto: DELETE /artpiece/:id
 
 #   - Taiteilijan kaikkien teosten haku: GET /artist/artpieces
-
 #   - Taiteilijan haku GET /artist/:id
 
 #   - Taideteoksen muokkaus: POST /artpiece

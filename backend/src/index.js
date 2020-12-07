@@ -101,7 +101,10 @@ const museumPath = `${museumsPath}/:id`;
 
 // kaikki
 const allPath = `${apiPath}/all`;
+// tietyn teoksen kaikki
 const allExact = `${allPath}/:id`;
+
+const allFromArtist = `${apiPath}/allFromArtist/:id`;
 
 // GET /resource (KAIKKI)
 todos.get(allPath, checkAccept, async (ctx) => {
@@ -263,6 +266,32 @@ todos.get(artpiecesPath, checkAccept, async (ctx) => {
       `);
 
     // Return all todos
+    ctx.body = data;
+  } catch (error) {
+    console.error('Error occurred:', error);
+    ctx.throw(500, error);
+  }
+});
+
+// GET /resource (kaikki taideteokset taiteilijalta)
+todos.get(allFromArtist, checkAccept, async (ctx) => {
+  const { id } = ctx.params;
+  console.log('.get id contains:', id);
+
+  if (isNaN(id) || id.includes('.')) {
+    ctx.throw(400, 'id must be an integer');
+  }
+
+  try {
+    const conn = await mysql.createConnection(connectionSettings);
+    const [data] = await conn.execute(`
+          SELECT *
+          FROM taideteokset
+          INNER JOIN taiteilijat ON taideteokset.taiteilijaFK = taiteilijat.taiteilija_id         
+          WHERE taiteilijaFK = :id
+        `, { id });
+
+    // Return the resource
     ctx.body = data;
   } catch (error) {
     console.error('Error occurred:', error);
