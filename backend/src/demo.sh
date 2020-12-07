@@ -38,6 +38,7 @@
 # - Node js v. 13.x tai uudempi
 
 # - npm
+# - yarn
 
 # - MySQL kanta käytössä
 
@@ -52,3 +53,54 @@
 # - kannan luontilauseet: luo alustaessa pienen kannan ( src/fixtures/initDB.js )
 
 # ===========================
+
+echo  "----------- Haetaan koodi versionhallinnasta"
+
+git clone https://gitlab.tamk.cloud/Jani/tietokanta
+
+cd tietokanta/
+pwd
+echo; echo " ----------- Asennetaan sovellus"
+
+cd backend/
+yarn add --dev nodemon
+cd ..
+docker-compose build
+docker-compose up
+
+
+
+
+npm -g install
+docker-compose up
+
+
+echo; echo " ----------- Käynnistetään palvelin"
+
+# npm start
+node index.js &
+
+
+echo; echo " ----------- Viedään kantaan dataa:"
+
+curl -X PUT -H "Content-Type: application/json;charset=UTF-8" -d '{ "email": "eric@hope.com", "name": "Eric" }' "http://localhost:3000/newuser"
+
+echo; echo " ----------- Tehdään hakuja:"
+
+curl -X GET -H "Content-Type: application/json;charset=UTF-8" "http://localhost:3000/user/2"
+
+echo; echo " ----------- Muutetaan dataa"
+
+curl -X POST -H "Content-Type: application/json;charset=UTF-8" -d '{ "address": "Street 7" }' "http://localhost:3000/user/2"
+
+echo; echo " ----------- Poistetaan dataa"
+
+curl -X DELETE -H "Content-Type: application/json;charset=UTF-8" "http://localhost:3000/user/2"
+
+echo; echo " ----------- Todetaan, että muutokset menivät perille:"
+
+curl -X GET -H "Content-Type: application/json;charset=UTF-8" "http://localhost:3000/user/2"
+
+echo; echo " ----------- THE END ------------"
+
+exit

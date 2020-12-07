@@ -104,7 +104,7 @@ const allPath = `${apiPath}/all`;
 // tietyn teoksen kaikki
 const allExact = `${allPath}/:id`;
 
-const allFromArtist = `${artistsPath}/:name`;
+const allFromArtist = `${artistsPath}/name/:name`;
 
 // GET /resource (KAIKKI)
 todos.get(allPath, checkAccept, async (ctx) => {
@@ -218,7 +218,7 @@ todos.get(todosPath, checkAccept, async (ctx) => {
   }
 });
 
-// GET /resource (taideteokset)
+// GET /resource (kaikki taideteokset)
 todos.get(artpiecesPath, checkAccept, async (ctx) => {
   const url = Url.parse(ctx.url, true);
   const { sort } = url.query;
@@ -294,7 +294,7 @@ todos.get(allFromArtist, checkAccept, async (ctx) => {
   }
 });
 
-// GET /resource (taiteilijat)
+// GET /resource (kaikki taiteilijat)
 todos.get(artistsPath, checkAccept, async (ctx) => {
   const url = Url.parse(ctx.url, true);
   const { sort } = url.query;
