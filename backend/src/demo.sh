@@ -66,13 +66,13 @@ cd backend/
 yarn add --dev nodemon
 cd ..
 docker-compose build
-docker-compose up
+docker-compose up -d
 
 
 
 
 npm -g install
-docker-compose up
+docker-compose up -d
 
 
 echo; echo " ----------- Käynnistetään palvelin"
