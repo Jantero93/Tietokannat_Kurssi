@@ -2,66 +2,60 @@ REST API. Docker. Database is simple, artists, artpieces and museums. Initializi
 
 Below script, which clones, installs repo and makes GET/PUT/POST/DELETE methods for example database.
 
-# =============================================
 
-## Perustiedot:
 
-# - tuni-mail: jani.k.sillanpaa@tuni.fi
+ - kuvaus: kanta sisältää tietoja taideteoksista
 
-# - kuvaus: kanta sisältää tietoja taideteoksista
+ - tekninen toteutus: Node.js, MySQL-kanta, Docker
 
-# - tekninen toteutus: Node.js, MySQL-kanta, Docker
+ mysql: User ID: root , password: db_rootpass , custom server; server address : db
 
-# mysql: User ID: root , password: db_rootpass , custom server; server address : db
+ API-kuvaus:
 
-# API-kuvaus:
+- GET kaikki artistit /artists/
+- GET tietty artisti /artist/:id
 
-#- GET kaikki artistit /artists/
-#- GET tietty artisti /artist/:id
+- GET kaikki museot /museums/
+- GET tietty museo /museum/:id
 
-#- GET kaikki museot /museums/
-#- GET tietty museo /museum/:id
+-GET kaikki taideteokset /artpieces/
+-GET tietty taideteos /artpiece/:id
 
-#-GET kaikki taideteokset /artpieces/
-#-GET tietty taideteos /artpiece/:id
+ - Museon lisäys : POST/museum
+ - Taiteilijan lisäys: POST/artist
+ - Taideteoksen lisäys: POST/artpiece
 
-# - Museon lisäys : POST/museum
-# - Taiteilijan lisäys: POST/artist
-# - Taideteoksen lisäys: POST/artpiece
+ - Museon muokkaus : PUT/museum/:id
+ - Taiteilijat muokkaus : PUT/artist/:id
+ - Taideteokset muokkaus : PUT/artpiece/:id
 
-# - Museon muokkaus : PUT/museum/:id
-# - Taiteilijat muokkaus : PUT/artist/:id
-# - Taideteokset muokkaus : PUT/artpiece/:id
+ - Taideteoksen poisto: DELETE /artpiece/:id
+ - Museon poisto: DELETE /museum/:id
+ - Taiteilijan poisto: DELETE /artist/:id
 
-# - Taideteoksen poisto: DELETE /artpiece/:id
-# - Museon poisto: DELETE /museum/:id
-# - Taiteilijan poisto: DELETE /artist/:id
+ - Koko datan haku GET /all/ (todellisessa elämässä vähän tyhmä)
+ - Tietyn taideteoksen kaikki data GET /all/:id
 
-# - Koko datan haku GET /all/ (todellisessa elämässä vähän tyhmä)
-# - Tietyn taideteoksen kaikki data GET /all/:id
+ - Tietyn taiteilijan kaikkien teosten haku: GET /artist/:name
+ - Taiteilijan haku GET /artist/:id
 
-# - Tietyn taiteilijan kaikkien teosten haku: GET /artist/:name
-# - Taiteilijan haku GET /artist/:id
+ Tekniset vaatimukset:
 
-# Tekniset vaatimukset:
+ - Docker
 
-# - Docker
+ - Node js v. 13.x tai uudempi
 
-# - Node js v. 13.x tai uudempi
+ - npm
+ - yarn
 
-# - npm
-# - yarn
+ - MySQL kanta käytössä
 
-# - MySQL kanta käytössä
 
-#
 
 # Konfiguraatio:
 # (tähän kuvausta miten konfiguroidaan käyttöön - jos tarpeen)
 # - oletusportti dockerilla 9000 && 9001 mysql
 # - luo alustaessa pienen kannan ( src/fixtures/initDB.js )
-
-# ===========================
 
 echo "----------- Haetaan koodi versionhallinnasta"
 
@@ -78,20 +72,6 @@ docker-compose build
 echo; echo " ----------- Käynnistetään Docker"
 docker-compose up -d
 echo; echo " ----------- Toivottavasti Docker käynnisty....
-
-
-# =============================================
-
-## Perustiedot:
-
-# - tuni-mail: jani.k.sillanpaa@tuni.fi
-
-# - kuvaus: kanta sisältää tietoja taideteoksista
-
-# - tekninen toteutus: Node.js, MySQL-kanta, Docker
-
-# - Datan vienti ja tulostelu, esimerkit tiedostossa mitä pitäisi tulla
-
 
 
 echo; echo " ----------- GET kaikki museo "
