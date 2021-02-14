@@ -33,7 +33,7 @@ Below script, which clones, installs repo and makes GET/PUT/POST/DELETE methods 
  - Museon poisto: DELETE /museum/:id
  - Taiteilijan poisto: DELETE /artist/:id
 
- - Koko datan haku GET /all/ (todellisessa elämässä vähän tyhmä)
+ - Koko datan haku GET /all/ 
  - Tietyn taideteoksen kaikki data GET /all/:id
 
  - Tietyn taiteilijan kaikkien teosten haku: GET /artist/:name
@@ -49,13 +49,6 @@ Below script, which clones, installs repo and makes GET/PUT/POST/DELETE methods 
  - yarn
 
  - MySQL kanta käytössä
-
-
-
-# Konfiguraatio:
-# (tähän kuvausta miten konfiguroidaan käyttöön - jos tarpeen)
-# - oletusportti dockerilla 9000 && 9001 mysql
-# - luo alustaessa pienen kannan ( src/fixtures/initDB.js )
 
 echo "----------- Haetaan koodi versionhallinnasta"
 
